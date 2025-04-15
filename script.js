@@ -1,10 +1,16 @@
 //If you would like to, you can create a variable to store the API_URL here.
 //This is optional. if you do not want to, skip this and move on.
 
+//https://fsa-puppy-bowl.herokuapp.com/api/2501-FTB-ET-WEB-AM/players
+
 
 /////////////////////////////
 /*This looks like a good place to declare any state or global variables you might need*/
 
+const playerContainer = document.getElementById('#allPlayersContainer')
+const addPlayerForm = document.querySelector('addPlayer');
+
+const players = []
 ////////////////////////////
 
 
@@ -16,9 +22,16 @@
  */
 const fetchAllPlayers = async () => {
   //TODO
-
-};
-
+  try { const response = await fetch ('https://fsa-puppy-bowl.herokuapp.com/api/2501-FTB-ET-WEB-AM/players');
+    const data = await response.json();
+    // console.log(data.data.players)
+  return data.data.players
+      // TODO
+    } catch (error) {
+      console.error("Could not fetch players", error);
+    }
+fetchAllPlayers()
+  }
 /**
  * Fetches a single player from the API.
  * This function should not be doing any rendering
@@ -27,7 +40,16 @@ const fetchAllPlayers = async () => {
  */
 const fetchSinglePlayer = async (playerId) => {
   //TODO
+  try { const response = await fetch (`https://fsa-puppy-bowl.herokuapp.com/api/2501-FTB-ET-WEB-AM/players/${playerId}/`);
+  const data = await response.json();
+
+  return data.player;
+
+  } catch (error) {
+    console.error(`Could not fetch player #${playerId}!`, error);
+  }
 };
+
 
 /**
  * Adds a new player to the roster via the API.
@@ -50,8 +72,23 @@ const fetchSinglePlayer = async (playerId) => {
 
 const addNewPlayer = async (newPlayer) => {
   //TODO
-};
+  
+  try {
+    const response = await fetch("https://fsa-puppy-bowl.herokuapp.com/api/2501-FTB-ET-WEB-AM/players/", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPlayer),
+    });
+    const data = await response.json();
+    return data;
+} catch (err) {
+    console.error('Oops, something went wrong with adding that player!', err);
+    return null;
+}
 
+}
 /**
  * Removes a player from the roster via the API.
  * Once the player is removed from the database,
@@ -68,8 +105,16 @@ const addNewPlayer = async (newPlayer) => {
 
 const removePlayer = async (playerId) => {
   //TODO
+  try {
+    const response = await fetch(`https://fsa-puppy-bowl.herokuapp.com/api/2501-FTB-ET-WEB-AM/players/${playerId}` , {
+      method: 'DELETE',
+    })
+  }
+  catch (error) {
+    console.error(`Could not remove player ${playerId}`)
 
-};
+}
+}
 
 /**
  * Updates html to display a list of all players or a single player page.
@@ -89,11 +134,25 @@ const removePlayer = async (playerId) => {
  *    from the database and our current view without having to refresh
  *
  */
-const render = () => {
-  // TODO
-
+const renderAllPlayers = (players) => {
   
-};
+const html = players.map((player) => {
+  return `
+        <div class ="player">
+        <img src="${player.imageUrl}">
+        <br> 
+        <h2>${player.name}</h2>
+        <br>
+        <button onclick="fetchSinglePlayer(${player.id})">Details</button>
+        <button onclick="removePlayer(${player.id})">Delete</button>
+      </div>
+  `
+ })
+ allPlayersContainer.innerHTML = html.join("")
+ }
+
+
+ 
 
 /**
  * Updates html to display a single player.
@@ -111,9 +170,18 @@ const render = () => {
  */
 const renderSinglePlayer = (player) => {
   // TODO
-
+  playerContainer.innerHTML = `
+    <div class="player">
+      <img src="${player.image}" alt="${player.name}}">
+      <h2>${player.name}</h2>
+      <h3>Breed: ${player.breed}</h3>
+      <h3>Status: ${player.status}</h3>
+      <p>Team Id: ${player.teamId}</p>
+      <p>Cohort Id: ${player.cohortId}</p>
+      <button onclick="init()">Back</button>
+    </div>
+  `
 };
-
 
 /**
  * Initializes the app by calling render
@@ -121,9 +189,10 @@ const renderSinglePlayer = (player) => {
  */
 const init = async () => {
   //Before we render, what do we always need...?
-
-  render();
-
+  const players = await fetchAllPlayers()
+  renderAllPlayers(players)
+  renderSinglePlayer()
+  
 };
 
 /**THERE IS NO NEED TO EDIT THE CODE BELOW =) **/

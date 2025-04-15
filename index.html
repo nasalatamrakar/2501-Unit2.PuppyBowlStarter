@@ -11,6 +11,18 @@
   <body>
     <h1>Welcome to Puppy Bowl!</h1>
     <!--Don't be afraid to add stuff to your HTML as needed!-->
-    
+    <div id="addPlayersForm">
+        <div class="form">
+          <h2 class="h2-title">Add a new player</h2>
+          <form id="addPlayer">
+            <label>Name:<input type="text" name="name" /></label>
+            <label>Breed:<input type="text" name="breed" /></label>
+            <label>Image URL:<input type="text" name="imageUrl" /></label>
+            <button id="add-pb">Add Player</button>
+          </form>
+        </div>
+    </div>
+    <h2>Meet the players:</h2>
+    <div id="allPlayersContainer"></div>
   </body>
 </html>

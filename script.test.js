@@ -24,6 +24,14 @@ describe("fetchAllPlayers", () => {
 });
 
 // TODO: Tests for `fetchSinglePlayer`
-
+describe("fetchSinglePlayer", () => {
+  test("should return a player object with full details", async () => {
+    const player = await fetchSinglePlayer(testPlayerId);
+    expect(player).toHaveProperty("id", testPlayerId);
+    expect(player).toHaveProperty("breed");
+    expect(player).toHaveProperty("status");
+    expect(player).toHaveProperty("team");
+  });
+});
 // TODO: Tests for `addNewPlayer`
 
